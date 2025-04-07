@@ -67,7 +67,7 @@ class UnsplashAPIService {
         }
     }
 
-    func searchItems(query: String, page: Int, completion: Block<[UnsplashPhoto]>?) {
+    func searchItems(query: String, page: Int, completion: Block<UnsplashSearchResults>?) {
         let endpoint: UnsplashEndpoint = .searchPhotos(query: query, page: page)
         loaderBlock?(true)
         apiService.makeRequest(endpoint: endpoint) { [weak self] (response: UnsplashSearchResults?, error) in
@@ -82,7 +82,7 @@ class UnsplashAPIService {
                 return
             }
 
-            completion?(response.results)
+            completion?(response)
         }
     }
 

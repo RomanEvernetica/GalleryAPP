@@ -14,9 +14,11 @@ class GalleryViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var searchText: String = "" {
         didSet {
-//            if searchText != oldValue {
+            if searchText.isEmpty && searchText != oldValue {
                 getItems()
-//            }
+            } else {
+                searchItems()
+            }
         }
     }
 
@@ -33,11 +35,27 @@ class GalleryViewModel: ObservableObject {
 
     func loadMoreIfNeeded(currentID: String) {
         guard let item = photos.last, item.id == currentID, !isLoading else { return }
-        paginaionService.getMoreitems()
+        paginaionService.getMoreitems() { [weak self] newItems in
+            self?.processDS(newItems: newItems)
+        }
     }
 
     private func getItems() {
-        paginaionService.getPhotos(searchText: searchText)
+        paginaionService.getNewItems() { [weak self] newItems in
+            self?.processDS(newItems: newItems)
+        }
+    }
+
+    private func searchItems() {
+        paginaionService.search(query: searchText) { [weak self] newItems in
+            self?.processDS(newItems: newItems)
+        }
+    }
+
+    private func processDS(newItems: [UnsplashPhoto]) {
+        DispatchQueue.main.async {
+            self.photos = self.paginaionService.processReponse(currentDS: self.photos, newItems: newItems)
+        }
     }
 
     private func observePagination() {
@@ -49,8 +67,8 @@ class GalleryViewModel: ObservableObject {
                 self?.isLoading = show
             }
         }
-        paginaionService.reloadUIBlock = { [weak self] items in
-            self?.photos = items
-        }
+//        paginaionService.reloadUIBlock = { [weak self] items in
+//            self?.photos = items
+//        }
     }
 }
