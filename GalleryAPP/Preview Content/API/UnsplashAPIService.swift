@@ -13,22 +13,61 @@ typealias Block<T> = (T) -> Void
 class UnsplashAPIService {
     private let apiService: APIService
 
+    var errorBlock: Block<String>?
+    var loaderBlock: Block<Bool>?
+
     init(apiService: APIService) {
         self.apiService = apiService
     }
 
-    func getItems(page: Int) async throws -> [UnsplashPhoto] {
+    func getItems(page: Int, completion: Block<[UnsplashPhoto]>?) {
         let endpoint: UnsplashEndpoint = .getPhotos(page: page)
-        return try await apiService.makeRequest(endpoint)
+
+        Task {
+            loaderBlock?(true)
+            defer { loaderBlock?(false) }
+
+            let result = await apiService.makeRequest(endpoint, as: [UnsplashPhoto].self)
+            switch result {
+                case .success(let response):
+                completion?(response)
+            case .failure(let error):
+                self.errorBlock?(error.localizedDescription)
+            }
+        }
     }
 
-    func searchItems(query: String, page: Int) async throws -> UnsplashSearchResults {
+    func searchItems(query: String, page: Int, completion: Block<UnsplashSearchResults>?) {
         let endpoint: UnsplashEndpoint = .searchPhotos(query: query, page: page)
-        return try await apiService.makeRequest(endpoint)
+
+        Task {
+            loaderBlock?(true)
+            defer { loaderBlock?(false) }
+
+            let result = await apiService.makeRequest(endpoint, as: UnsplashSearchResults.self)
+            switch result {
+                case .success(let response):
+                completion?(response)
+            case .failure(let error):
+                self.errorBlock?(error.localizedDescription)
+            }
+        }
     }
 
-    func getPhotoBy(id: String) async throws -> UnsplashPhoto {
+    func getPhotoBy(id: String, completion: Block<UnsplashPhoto>?) {
         let endpoint: UnsplashEndpoint = .getPhoto(id: id)
-        return try await apiService.makeRequest(endpoint)
+
+        Task {
+            loaderBlock?(true)
+            defer { loaderBlock?(false) }
+
+            let result = await apiService.makeRequest(endpoint, as: UnsplashPhoto.self)
+            switch result {
+                case .success(let response):
+                completion?(response)
+            case .failure(let error):
+                self.errorBlock?(error.localizedDescription)
+            }
+        }
     }
 }

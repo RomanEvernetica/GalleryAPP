@@ -5,7 +5,7 @@
 //  Created by Eugene Shapovalov on 03.04.2025.
 //
 
-import SwiftUI
+import Foundation
 
 class GalleryViewModel: ObservableObject {
     private let paginaionService: UnsplashPaginationService
@@ -15,9 +15,9 @@ class GalleryViewModel: ObservableObject {
     @Published var searchText: String = "" {
         didSet {
             if searchText.isEmpty && searchText != oldValue {
-                getPhotos()
+                getItems()
             } else {
-                searchPhotos()
+                searchItems()
             }
         }
     }
@@ -30,46 +30,25 @@ class GalleryViewModel: ObservableObject {
 
     func didLoad() {
         observePagination()
-        getPhotos()
+        getItems()
     }
 
-    func loadMoreIfNeeded(currentID: String) async {
+    func loadMoreIfNeeded(currentID: String) {
         guard let item = photos.last, item.id == currentID, !isLoading else { return }
-        do {
-            let items = try await paginaionService.getMoreitems()
-            processDS(newItems: items)
-        } catch {
-            print(error.localizedDescription)
+        paginaionService.getMoreitems() { [weak self] newItems in
+            self?.processDS(newItems: newItems)
         }
     }
 
-    private func getPhotos() {
-        Task {
-            await getItems()
+    private func getItems() {
+        paginaionService.getNewItems() { [weak self] newItems in
+            self?.processDS(newItems: newItems)
         }
     }
 
-    private func searchPhotos() {
-        Task {
-            await searchItems()
-        }
-    }
-
-    private func getItems() async {
-        do {
-            let items = try await paginaionService.getNewItems()
-            processDS(newItems: items)
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    private func searchItems() async {
-        do {
-            let items = try await paginaionService.search(query: searchText)
-            processDS(newItems: items)
-        } catch {
-            print(error.localizedDescription)
+    private func searchItems() {
+        paginaionService.search(query: searchText) { [weak self] newItems in
+            self?.processDS(newItems: newItems)
         }
     }
 
@@ -80,9 +59,9 @@ class GalleryViewModel: ObservableObject {
     }
 
     private func observePagination() {
-//        paginaionService.errorBlock = { [weak self] error in
-//
-//        }
+        paginaionService.errorBlock = { [weak self] error in
+
+        }
         paginaionService.loaderBlock = { [weak self] show in
             DispatchQueue.main.async {
                 self?.isLoading = show
