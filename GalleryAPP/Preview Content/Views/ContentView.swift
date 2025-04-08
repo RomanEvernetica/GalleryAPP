@@ -32,9 +32,7 @@ struct ContentView: View {
                                     .clipped()
                                     .cornerRadius(10)
                                     .onAppear {
-                                        Task {
-                                            await viewModel.loadMoreIfNeeded(currentID: item.id)
-                                        }
+                                        viewModel.loadMoreIfNeeded(currentID: item.id)
                                     }
                             }
                         }
@@ -50,6 +48,11 @@ struct ContentView: View {
                         ProgressView()
                             .foregroundStyle(.primary)
                     }
+                }
+                .alert("Error", isPresented: $viewModel.showAlert) {
+                    Button("ОК", role: .cancel) {}
+                } message: {
+                    Text(viewModel.alertMessage ?? "Unknown error")
                 }
                 .navigationTitle("Unsplash Gallery")
             }

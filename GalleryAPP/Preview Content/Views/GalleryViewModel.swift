@@ -12,6 +12,14 @@ class GalleryViewModel: ObservableObject {
 
     @Published var photos: [UnsplashPhoto] = []
     @Published var isLoading = false
+    @Published var alertMessage: String? = nil
+    @Published var showAlert: Bool = false {
+        didSet {
+            if showAlert == false {
+                alertMessage = nil
+            }
+        }
+    }
     @Published var searchText: String = "" {
         didSet {
             if searchText.isEmpty && searchText != oldValue {
@@ -60,12 +68,17 @@ class GalleryViewModel: ObservableObject {
 
     private func observePagination() {
         paginaionService.errorBlock = { [weak self] error in
-
+            self?.showError(error)
         }
         paginaionService.loaderBlock = { [weak self] show in
             DispatchQueue.main.async {
                 self?.isLoading = show
             }
         }
+    }
+
+    private func showError(_ error: String) {
+        alertMessage = error
+        showAlert = true
     }
 }
