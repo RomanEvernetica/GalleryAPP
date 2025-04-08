@@ -8,11 +8,6 @@
 import Foundation
 
 class UnsplashPaginationService {
-//    enum PaginationType: String {
-//        case new
-//        case more
-//    }
-
     private let apiService: UnsplashAPIService
     private var page = 1
     private var query = ""
@@ -23,12 +18,10 @@ class UnsplashPaginationService {
         totalPages > page
     }
 
-    var errorBlock: Block<String>?
     var loaderBlock: Block<Bool>?
 
     init(apiService: UnsplashAPIService) {
         self.apiService = apiService
-        self.observe()
     }
 
     func clean() {
@@ -36,49 +29,51 @@ class UnsplashPaginationService {
         query = ""
     }
 
-    func getNewItems(completion: Block<[UnsplashPhoto]>?) {
+    func getNewItems() async throws -> [UnsplashPhoto] {
         clean()
 
-        getItems(completion: completion)
+        return try await getItems()
     }
 
-    private func getItems(completion: Block<[UnsplashPhoto]>?) {
-        apiService.getItems(page: page) { items in
-            completion?(items)
-        }
+    private func getItems() async throws -> [UnsplashPhoto] {
+        loaderBlock?(true)
+        defer { loaderBlock?(false) }
+
+        return try await apiService.getItems(page: page)
     }
 
-    func getMoreitems(completion: Block<[UnsplashPhoto]>?) {
+    func getMoreitems() async throws -> [UnsplashPhoto] {
         page += 1
 
-        if !query.isEmpty {
-            if canGetMore {
-                searchItems(query: query, completion: completion)
-            }
+        if !query.isEmpty && canGetMore {
+            return try await searchItems(query: query)
         } else {
-            getItems(completion: completion)
+            return try await getItems()
         }
     }
 
-    func getPhotoBy(id: String, completion: Block<UnsplashPhoto>?) {
-        apiService.getPhotoBy(id: id, completion: completion)
+    func getPhotoBy(id: String) async throws -> UnsplashPhoto {
+        loaderBlock?(true)
+        defer { loaderBlock?(false) }
+
+        return try await apiService.getPhotoBy(id: id)
     }
 
-    func search(query: String, completion: Block<[UnsplashPhoto]>?) {
-        if self.query == query { return }
-
+    func search(query: String) async throws -> [UnsplashPhoto] {
         self.query = query
         page = 1
 
-        searchItems(query: query, completion: completion)
+        return try await searchItems(query: query)
     }
 
-    private func searchItems(query: String, completion: Block<[UnsplashPhoto]>?) {
-        apiService.searchItems(query: query, page: page) { [weak self] response in
-            self?.total = response.total
-            self?.totalPages = response.totalPages
-            completion?(response.results)
-        }
+    private func searchItems(query: String) async throws -> [UnsplashPhoto] {
+        loaderBlock?(true)
+        defer { loaderBlock?(false) }
+
+        let response = try await apiService.searchItems(query: query, page: page)
+        total = response.total
+        totalPages = response.totalPages
+        return response.results
     }
 
     func processReponse(currentDS: [UnsplashPhoto], newItems: [UnsplashPhoto]) -> [UnsplashPhoto] {
@@ -87,14 +82,5 @@ class UnsplashPaginationService {
             } else {
                 return currentDS + newItems
             }
-    }
-
-    private func observe() {
-        apiService.errorBlock = { [weak self] error in
-            self?.errorBlock?(error)
-        }
-        apiService.loaderBlock = { [weak self] isLoading in
-            self?.loaderBlock?(isLoading)
-        }
     }
 }

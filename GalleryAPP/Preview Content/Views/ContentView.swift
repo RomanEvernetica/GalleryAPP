@@ -32,7 +32,9 @@ struct ContentView: View {
                                     .clipped()
                                     .cornerRadius(10)
                                     .onAppear {
-                                        viewModel.loadMoreIfNeeded(currentID: item.id)
+                                        Task {
+                                            await viewModel.loadMoreIfNeeded(currentID: item.id)
+                                        }
                                     }
                             }
                         }
