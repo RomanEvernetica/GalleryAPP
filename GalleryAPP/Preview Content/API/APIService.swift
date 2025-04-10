@@ -39,18 +39,43 @@ enum APIResult<T: Decodable> {
 class APIService {
     @MainActor
     func makeRequest<T: Decodable>(_ endpoint: Endpoint, as type: T.Type) async -> APIResult<T> {
+        let requestId = UUID().uuidString
+
+
+
         do {
-            let value = try await request(endpoint)
-                .validate(statusCode: 200..<300)
-                .serializingDecodable(T.self)
-                .value
-            return .success(value)
+            let dataTask = AF.request(endpoint.url,
+                                      method: endpoint.method,
+                                      parameters: endpoint.params,
+                                      headers: endpoint.headers)
+            HTTPLogger.logRequest(
+                id: requestId,
+                url: endpoint.url,
+                method: endpoint.method.rawValue,
+                headers: endpoint.headers.dictionary,
+                body: dataTask.request?.httpBody
+            )
+
+            let response = await dataTask.serializingData().response
+
+            HTTPLogger.logResponse(
+                id: requestId,
+                data: response.data,
+                statusCode: response.response?.statusCode
+            )
+
+            let decoded = try JSONDecoder().decode(T.self, from: response.data!)
+            return .success(decoded)
+
         } catch let afError as AFError {
+            HTTPLogger.logError(id: requestId, afError)
             return .failure(errorHandler(afError))
         } catch {
+            HTTPLogger.logError(id: requestId, error)
             return .failure(APIError.unknown)
         }
     }
+
 
     private func request(_ endpoint: Endpoint) -> DataRequest {
         return AF.request(endpoint.url,
