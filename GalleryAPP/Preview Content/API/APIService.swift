@@ -33,12 +33,12 @@ enum APIError: Error, LocalizedError {
 
 enum APIResult<T: Decodable> {
     case success(T)
-    case failure(APIError)
+    case failure(Error)
 }
 
 class APIService {
     @MainActor
-    func makeRequest<T: Decodable>(_ endpoint: Endpoint, as type: T.Type) async -> APIResult<T> {
+    func makeRequest<T: Decodable>(_ endpoint: Endpoint) async -> APIResult<T> {
         let requestId = UUID().uuidString
 
 

@@ -20,40 +20,6 @@ class UnsplashAPIService {
         self.apiService = apiService
     }
 
-    func getItems(page: Int, completion: Block<[UnsplashPhoto]>?) {
-        let endpoint: UnsplashEndpoint = .getPhotos(page: page)
-
-        Task {
-            loaderBlock?(true)
-            defer { loaderBlock?(false) }
-
-            let result = await apiService.makeRequest(endpoint, as: [UnsplashPhoto].self)
-            switch result {
-                case .success(let response):
-                completion?(response)
-            case .failure(let error):
-                self.errorBlock?(error.localizedDescription)
-            }
-        }
-    }
-
-    func searchItems(query: String, page: Int, completion: Block<UnsplashSearchResults>?) {
-        let endpoint: UnsplashEndpoint = .searchPhotos(query: query, page: page)
-
-        Task {
-            loaderBlock?(true)
-            defer { loaderBlock?(false) }
-
-            let result = await apiService.makeRequest(endpoint, as: UnsplashSearchResults.self)
-            switch result {
-                case .success(let response):
-                completion?(response)
-            case .failure(let error):
-                self.errorBlock?(error.localizedDescription)
-            }
-        }
-    }
-
     func getPhotoBy(id: String, completion: Block<UnsplashPhoto>?) {
         let endpoint: UnsplashEndpoint = .getPhoto(id: id)
 
@@ -61,7 +27,7 @@ class UnsplashAPIService {
             loaderBlock?(true)
             defer { loaderBlock?(false) }
 
-            let result = await apiService.makeRequest(endpoint, as: UnsplashPhoto.self)
+            let result: APIResult<UnsplashPhoto> = await apiService.makeRequest(endpoint)
             switch result {
                 case .success(let response):
                 completion?(response)

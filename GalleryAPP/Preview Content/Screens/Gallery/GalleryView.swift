@@ -40,7 +40,7 @@ struct GalleryView: View {
                 .searchable(text: $viewModel.searchText, prompt: "Search")
             }
             .onAppear {
-                viewModel.didLoad()
+                viewModel.onAppear()
             }
             .overlay {
                 if viewModel.isLoading {
