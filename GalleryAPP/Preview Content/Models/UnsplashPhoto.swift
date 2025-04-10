@@ -12,6 +12,7 @@ struct UnsplashPhoto: Codable, Identifiable {
     let height: Int
     let width: Int
     let urls: ImageURLs
+    let user: UnsplashUser
 }
 
 struct ImageURLs: Codable {

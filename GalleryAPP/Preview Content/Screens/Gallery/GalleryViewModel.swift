@@ -99,6 +99,6 @@ extension GalleryViewModel: PaginationDelegate {
     }
     
     func searchEndpoint(query: String, page: Int) -> any Endpoint {
-        UnsplashEndpoint.searchPhotos(query: query, page: page)
+        UnsplashEndpoint.searchPhotos(query: query, page: page, collections: [])
     }
 }
