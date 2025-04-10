@@ -16,7 +16,6 @@ struct GalleryItemView: View {
     }
 
     init(item: UnsplashPhoto) {
-        print(item.id)
         self.url = item.urls.small
     }
 
