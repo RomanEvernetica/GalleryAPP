@@ -92,7 +92,7 @@ class PaginationService<T: Codable> {
         }
     }
 
-    func processReponse(currentDS: [UnsplashPhoto], newItems: [UnsplashPhoto]) -> [UnsplashPhoto] {
+    func processReponse(currentDS: [T], newItems: [T]) -> [T] {
         if newItems.isEmpty {
             canGetMore = false
         }

@@ -23,7 +23,7 @@ struct MainScreenTabView: View {
                     Label("Gallery", systemImage: "photo.on.rectangle")
                 }
                 .tag(Tab.gallery)
-            GalleryView()
+            CollectionsView()
                 .tabItem {
                     Label("Collections", systemImage: "folder")
                 }

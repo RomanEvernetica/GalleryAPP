@@ -7,8 +7,24 @@
 
 import SwiftUI
 
-enum MainRoute: Hashable {
+enum MainRoute: Hashable, Equatable {
     case fullScreen(url: URL)
+    case collection(item: UnsplashCollection)
+
+    static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
+        switch (lhs, rhs) {
+        case (.fullScreen, .fullScreen):
+            return true
+        case (.collection, .collection):
+            return true
+        default:
+            return false
+        }
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.hashValue)
+    }
 }
 
 class MainRouter: ObservableObject {
@@ -23,6 +39,8 @@ class MainRouter: ObservableObject {
         switch route {
         case let .fullScreen(url):
             FullScreenView(url: url)
+        case let .collection(item):
+            Text(item.title ?? "Gallery item")
         }
     }
 }
