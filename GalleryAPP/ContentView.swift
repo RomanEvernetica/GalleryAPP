@@ -12,7 +12,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $router.navigationPath) {
-            GalleryView()
+            MainScreenTabView()
                 .environmentObject(router)
                 .navigationDestination(for: MainRoute.self) { route in
                     router.configure(route: route)

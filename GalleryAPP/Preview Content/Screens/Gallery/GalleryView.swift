@@ -14,46 +14,45 @@ struct GalleryView: View {
     @EnvironmentObject var router: MainRouter
 
     var body: some View {
-        GeometryReader { geometry in
-            let totalSpacing: CGFloat = spacing * CGFloat(columns.count + 1)
-            let itemWidth = (geometry.size.width - totalSpacing) / CGFloat(columns.count)
+        NavigationView {
+            GeometryReader { geometry in
+                let totalSpacing: CGFloat = spacing * CGFloat(columns.count + 1)
+                let itemWidth = (geometry.size.width - totalSpacing) / CGFloat(columns.count)
 
-            ScrollView {
-                LazyVGrid(columns: columns) {
-                    ForEach(viewModel.photos) { item in
-                        GalleryItemView(item: item)
-                            .scaledToFill()
-                            .frame(width: itemWidth, height: itemWidth)
-                            .clipped()
-                            .cornerRadius(10)
-                            .onAppear {
-                                viewModel.loadMoreIfNeeded(currentID: item.id)
-                            }
-                            .onTapGesture {
-                                if let url = item.urls.full {
-                                    router.navigateTo(route: .fullScreen(url: url))
+                ScrollView {
+                    LazyVGrid(columns: columns) {
+                        ForEach(viewModel.photos) { item in
+                            GalleryItemView(item: item)
+                                .scaledToFill()
+                                .frame(width: itemWidth, height: itemWidth)
+                                .clipped()
+                                .cornerRadius(10)
+                                .onAppear {
+                                    viewModel.loadMoreIfNeeded(currentID: item.id)
                                 }
-                            }
+                                .onTapGesture {
+                                    if let url = item.urls.full {
+                                        router.navigateTo(route: .fullScreen(url: url))
+                                    }
+                                }
+                        }
+                    }
+                    .padding(spacing)
+                }
+                .overlay {
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .foregroundStyle(.primary)
                     }
                 }
-                .padding(spacing)
-                .searchable(text: $viewModel.searchText, prompt: "Search")
-            }
-            .onAppear {
-                viewModel.onAppear()
-            }
-            .overlay {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .foregroundStyle(.primary)
+                .alert("Error", isPresented: $viewModel.showAlert) {
+                    Button("ОК", role: .cancel) {}
+                } message: {
+                    Text(viewModel.alertMessage ?? "Unknown error")
                 }
+                .searchable(text: $viewModel.searchText, prompt: "Search photos")
+                .navigationTitle("Photo Gallery")
             }
-            .alert("Error", isPresented: $viewModel.showAlert) {
-                Button("ОК", role: .cancel) {}
-            } message: {
-                Text(viewModel.alertMessage ?? "Unknown error")
-            }
-            .navigationTitle("Unsplash Gallery")
         }
     }
 }

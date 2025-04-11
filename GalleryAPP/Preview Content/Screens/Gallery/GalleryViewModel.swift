@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class GalleryViewModel: ObservableObject {
     private let paginaionService: PaginationService<UnsplashPhoto>
 
@@ -33,10 +34,11 @@ class GalleryViewModel: ObservableObject {
     init() {
         let apiService = APIService()
         paginaionService = PaginationService(apiService: apiService)
-        paginaionService.delegate = self
+        start()
     }
 
-    func onAppear() {
+    private func start() {
+        paginaionService.delegate = self
         getItems()
     }
 
@@ -44,40 +46,38 @@ class GalleryViewModel: ObservableObject {
         guard let item = photos.last, item.id == currentID, !isLoading, paginaionService.canGetMore else { return }
 
         Task {
-            await MainActor.run { isLoading = true }
-            defer { Task { await MainActor.run { isLoading = false } } }
+            isLoading = true
+            defer { isLoading = false }
 
             let result = await paginaionService.getMoreitems()
-            await handleResult(result)
+            handleResult(result)
         }
     }
 
     private func getItems() {
         Task {
-            await MainActor.run { isLoading = true }
-            defer { Task { await MainActor.run { isLoading = false } } }
+            isLoading = true
+            defer { isLoading = false }
 
             let result = await paginaionService.getNewItems()
-            await handleResult(result)
+            handleResult(result)
         }
     }
 
     private func searchItems() {
         Task {
-            await MainActor.run { isLoading = true }
-            defer { Task { await MainActor.run { isLoading = false } } }
+            isLoading = true
+            defer { isLoading = false }
 
             let result = await paginaionService.search(query: searchText)
-            await handleResult(result)
+            handleResult(result)
         }
     }
 
-    @MainActor
     private func processDS(newItems: [UnsplashPhoto]) {
         photos = paginaionService.processReponse(currentDS: photos, newItems: newItems)
     }
 
-    @MainActor
     private func handleResult(_ result: APIResult<[UnsplashPhoto]>) {
         switch result {
         case let .success(items):
@@ -93,7 +93,7 @@ class GalleryViewModel: ObservableObject {
     }
 }
 
-extension GalleryViewModel: PaginationDelegate {
+extension GalleryViewModel: @preconcurrency PaginationDelegate {
     func endpoint(page: Int) -> any Endpoint {
         UnsplashEndpoint.getPhotos(page: page)
     }
