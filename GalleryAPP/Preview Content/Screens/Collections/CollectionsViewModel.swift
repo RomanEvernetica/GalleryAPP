@@ -10,8 +10,9 @@ import Foundation
 @MainActor
 class CollectionsViewModel: ObservableObject {
     private let paginaionService: PaginationService<UnsplashCollection>
+    private var dataLoaded = false
 
-    @Published var dataSource: [UnsplashCollection] = []
+    @Published var dataSource: [CollectionItemViewModel] = []
     @Published var isLoading = false
     @Published var alertMessage: String? = nil
     @Published var showAlert: Bool = false {
@@ -29,6 +30,10 @@ class CollectionsViewModel: ObservableObject {
                 searchItems()
             }
         }
+    }
+
+    var showEmptyMessage: Bool {
+        dataLoaded && dataSource.isEmpty
     }
 
     init() {
@@ -75,7 +80,13 @@ class CollectionsViewModel: ObservableObject {
     }
 
     private func processDS(newItems: [UnsplashCollection]) {
-        dataSource = paginaionService.processReponse(currentDS: dataSource, newItems: newItems)
+        let newVMs = newItems.map(makeVM)
+        dataSource = paginaionService.processReponse(currentDS: dataSource, newItems: newVMs)
+        dataLoaded = true
+    }
+
+    private func makeVM(item: UnsplashCollection) -> CollectionItemViewModel {
+        return CollectionItemViewModel(collection: item)
     }
 
     private func handleResult(_ result: APIResult<[UnsplashCollection]>) {

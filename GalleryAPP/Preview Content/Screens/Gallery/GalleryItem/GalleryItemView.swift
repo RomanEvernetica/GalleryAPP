@@ -9,18 +9,14 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct GalleryItemView: View {
-    private let url: URL?
+    private let viewModel: GalleryItemViewModel
 
-    init(url: URL?) {
-        self.url = url
-    }
-
-    init(item: UnsplashPhoto) {
-        self.url = item.urls.small
+    init(viewModel: GalleryItemViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
-        WebImage(url: url) { image in
+        WebImage(url: viewModel.itemURL) { image in
             image.resizable()
         } placeholder: {
             Rectangle().foregroundColor(.gray)
@@ -31,5 +27,5 @@ struct GalleryItemView: View {
 }
 
 #Preview {
-    GalleryItemView(url: URL(string: "https://nokiatech.github.io/heif/content/images/ski_jump_1440x960.heic"))
+    GalleryItemView(viewModel: GalleryItemViewModel(item: MockedData.photo))
 }

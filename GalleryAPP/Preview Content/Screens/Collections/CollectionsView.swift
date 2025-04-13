@@ -11,8 +11,12 @@ struct CollectionsView: View {
     private let spacing: CGFloat = 8
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
-    @StateObject private var viewModel = CollectionsViewModel()
+    @ObservedObject private var viewModel: CollectionsViewModel
     @EnvironmentObject var router: MainRouter
+
+    init(viewModel: CollectionsViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         NavigationView {
@@ -23,7 +27,7 @@ struct CollectionsView: View {
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(viewModel.dataSource) { item in
-                            CollectionItemView(item: item)
+                            CollectionItemView(viewModel: item)
                                 .scaledToFill()
                                 .frame(width: itemWidth, height: itemWidth)
                                 .clipped()
@@ -32,7 +36,8 @@ struct CollectionsView: View {
                                     viewModel.loadMoreIfNeeded(currentID: item.id)
                                 }
                                 .onTapGesture {
-                                    router.navigateTo(route: .collection(item: item))
+                                    let vm = CollectionDetailViewModel(collection: item.model)
+                                    router.navigateTo(route: .collection(vm: vm))
                                 }
                         }
                     }
@@ -42,6 +47,10 @@ struct CollectionsView: View {
                     if viewModel.isLoading {
                         ProgressView()
                             .foregroundStyle(.primary)
+                    }
+
+                    if viewModel.showEmptyMessage {
+                        Text("No results")
                     }
                 }
                 .alert("Error", isPresented: $viewModel.showAlert) {
@@ -57,5 +66,5 @@ struct CollectionsView: View {
 }
 
 #Preview {
-    CollectionsView()
+    CollectionsView(viewModel: CollectionsViewModel())
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UnsplashPhoto: Codable, Identifiable {
+struct UnsplashPhoto: Codable {
     let id: String
     let height: Int
     let width: Int

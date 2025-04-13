@@ -10,8 +10,10 @@ import Foundation
 @MainActor
 class GalleryViewModel: ObservableObject {
     private let paginaionService: PaginationService<UnsplashPhoto>
+    private let collectionID: String?
+    private var dataLoaded = false
 
-    @Published var photos: [UnsplashPhoto] = []
+    @Published var dataSource: [GalleryItemViewModel] = []
     @Published var isLoading = false
     @Published var alertMessage: String? = nil
     @Published var showAlert: Bool = false {
@@ -30,11 +32,15 @@ class GalleryViewModel: ObservableObject {
             }
         }
     }
+    var showEmptyMessage: Bool {
+        dataLoaded && dataSource.isEmpty
+    }
 
-    init() {
+    init(collectionID: String? = nil) {
         let apiService = APIService()
-        paginaionService = PaginationService(apiService: apiService)
-        start()
+        self.paginaionService = PaginationService(apiService: apiService)
+        self.collectionID = collectionID
+        self.start()
     }
 
     private func start() {
@@ -43,7 +49,7 @@ class GalleryViewModel: ObservableObject {
     }
 
     func loadMoreIfNeeded(currentID: String) {
-        guard let item = photos.last, item.id == currentID, !isLoading, paginaionService.canGetMore else { return }
+        guard let item = dataSource.last, item.id == currentID, !isLoading, paginaionService.canGetMore else { return }
 
         Task {
             isLoading = true
@@ -75,7 +81,13 @@ class GalleryViewModel: ObservableObject {
     }
 
     private func processDS(newItems: [UnsplashPhoto]) {
-        photos = paginaionService.processReponse(currentDS: photos, newItems: newItems)
+        let newVMs = newItems.map(makeVM)
+        dataSource = paginaionService.processReponse(currentDS: dataSource, newItems: newVMs)
+        dataLoaded = true
+    }
+
+    private func makeVM(photo: UnsplashPhoto) -> GalleryItemViewModel {
+        return GalleryItemViewModel(item: photo)
     }
 
     private func handleResult(_ result: APIResult<[UnsplashPhoto]>) {
@@ -95,10 +107,18 @@ class GalleryViewModel: ObservableObject {
 
 extension GalleryViewModel: @preconcurrency PaginationDelegate {
     func endpoint(page: Int) -> any Endpoint {
-        UnsplashEndpoint.getPhotos(page: page)
+        if let collectionID = collectionID {
+            UnsplashEndpoint.getCollectionPhotos(id: collectionID, page: page)
+        } else {
+            UnsplashEndpoint.getPhotos(page: page)
+        }
     }
     
     func searchEndpoint(query: String, page: Int) -> any Endpoint {
-        UnsplashEndpoint.searchPhotos(query: query, page: page, collections: [])
+        var collections = [String]()
+        if let collectionID = collectionID {
+            collections.append(collectionID)
+        }
+        return UnsplashEndpoint.searchPhotos(query: query, page: page, collections: collections)
     }
 }

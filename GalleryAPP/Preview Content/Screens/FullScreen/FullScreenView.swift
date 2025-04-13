@@ -9,20 +9,20 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct FullScreenView: View {
-    private let url: URL
+    private let viewModel: FullScreenViewModel
 
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
 
-    init(url: URL) {
-        self.url = url
+    init(viewModel: FullScreenViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             
-            WebImage(url: url)
+            WebImage(url: viewModel.url)
                 .resizable()
                 .indicator(.activity)
                 .scaledToFit()
@@ -43,5 +43,5 @@ struct FullScreenView: View {
 }
 
 #Preview {
-    FullScreenView(url: URL(string: "https://nokiatech.github.io/heif/content/images/ski_jump_1440x960.heic")!)
+    FullScreenView(viewModel: FullScreenViewModel(url: MockedData.photo.urls.full!))
 }

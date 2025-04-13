@@ -10,8 +10,13 @@ import SwiftUI
 struct GalleryView: View {
     private let spacing: CGFloat = 8
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
-    @StateObject private var viewModel = GalleryViewModel()
+
+    @ObservedObject private var viewModel: GalleryViewModel
     @EnvironmentObject var router: MainRouter
+
+    init(viewModel: GalleryViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         NavigationView {
@@ -21,8 +26,8 @@ struct GalleryView: View {
 
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(viewModel.photos) { item in
-                            GalleryItemView(item: item)
+                        ForEach(viewModel.dataSource) { item in
+                            GalleryItemView(viewModel: item)
                                 .scaledToFill()
                                 .frame(width: itemWidth, height: itemWidth)
                                 .clipped()
@@ -31,8 +36,8 @@ struct GalleryView: View {
                                     viewModel.loadMoreIfNeeded(currentID: item.id)
                                 }
                                 .onTapGesture {
-                                    if let url = item.urls.full {
-                                        router.navigateTo(route: .fullScreen(url: url))
+                                    if let url = item.fullImageURL {
+                                        router.navigateTo(route: .fullScreen(vm: FullScreenViewModel(url: url)))
                                     }
                                 }
                         }
@@ -43,6 +48,10 @@ struct GalleryView: View {
                     if viewModel.isLoading {
                         ProgressView()
                             .foregroundStyle(.primary)
+                    }
+
+                    if viewModel.showEmptyMessage {
+                        Text("No results")
                     }
                 }
                 .alert("Error", isPresented: $viewModel.showAlert) {
@@ -58,5 +67,5 @@ struct GalleryView: View {
 }
 
 #Preview {
-    GalleryView()
+    GalleryView(viewModel: GalleryViewModel())
 }

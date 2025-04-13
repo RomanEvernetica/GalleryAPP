@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UnsplashCollection: Codable, Identifiable {
+struct UnsplashCollection: Codable {
     let id: String
     let title: String?
     let description: String?

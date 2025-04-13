@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var router = MainRouter()
+    @EnvironmentObject var router: MainRouter
 
     var body: some View {
         NavigationStack(path: $router.navigationPath) {
             MainScreenTabView()
-                .environmentObject(router)
                 .navigationDestination(for: MainRoute.self) { route in
                     router.configure(route: route)
                 }

@@ -92,7 +92,7 @@ class PaginationService<T: Codable> {
         }
     }
 
-    func processReponse(currentDS: [T], newItems: [T]) -> [T] {
+    func processReponse<U>(currentDS: [U], newItems: [U]) -> [U] {
         if newItems.isEmpty {
             canGetMore = false
         }

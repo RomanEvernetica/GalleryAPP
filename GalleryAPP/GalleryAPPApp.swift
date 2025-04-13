@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct GalleryAPPApp: App {
+    @ObservedObject var router = MainRouter()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(router)
         }
     }
 }

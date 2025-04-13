@@ -13,17 +13,19 @@ struct MainScreenTabView: View {
         case collections
     }
 
+    private let viewModel = MainScreenTabViewModel()
+
     @State var selectedTab: Tab = .gallery
     @State var searchText: String = ""
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            GalleryView()
+            GalleryView(viewModel: viewModel.galleryViewModel)
                 .tabItem {
                     Label("Gallery", systemImage: "photo.on.rectangle")
                 }
                 .tag(Tab.gallery)
-            CollectionsView()
+            CollectionsView(viewModel: viewModel.collectionsViewModel)
                 .tabItem {
                     Label("Collections", systemImage: "folder")
                 }

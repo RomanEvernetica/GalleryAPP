@@ -8,8 +8,8 @@
 import SwiftUI
 
 enum MainRoute: Hashable, Equatable {
-    case fullScreen(url: URL)
-    case collection(item: UnsplashCollection)
+    case fullScreen(vm: FullScreenViewModel)
+    case collection(vm: CollectionDetailViewModel)
 
     static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
         switch (lhs, rhs) {
@@ -37,10 +37,10 @@ class MainRouter: ObservableObject {
     @ViewBuilder
     func configure(route: MainRoute) -> some View {
         switch route {
-        case let .fullScreen(url):
-            FullScreenView(url: url)
-        case let .collection(item):
-            Text(item.title ?? "Gallery item")
+        case let .fullScreen(vm):
+            FullScreenView(viewModel: vm)
+        case let .collection(vm):
+            CollectionDetailView(viewModel: vm)
         }
     }
 }

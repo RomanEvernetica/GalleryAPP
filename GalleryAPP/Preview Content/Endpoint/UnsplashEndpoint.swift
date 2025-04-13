@@ -10,7 +10,7 @@ import Foundation
 
 enum UnsplashEndpoint: Endpoint {
     case getPhotos(page: Int)
-    case searchPhotos(query: String, page: Int, collections: [Int])
+    case searchPhotos(query: String, page: Int, collections: [String])
     case getPhoto(id: String)
 
     case getUser(username: String)
@@ -56,7 +56,7 @@ enum UnsplashEndpoint: Endpoint {
         case let .searchPhotos(query, page, collections):
             var path = "/search/photos?page=\(page)&query=\(query)"
             if !collections.isEmpty {
-                path += "&collections=\(collections.map(\.description).joined(separator: ","))"
+                path += "&collections=\(collections.joined(separator: ","))"
             }
             return path
         case let .getPhoto(id):
