@@ -31,6 +31,31 @@ struct UserProfileView: View {
                     .padding(.horizontal)
             }
 
+            HStack {
+                Spacer()
+
+                HStack {
+                    Image(systemName: "photo.on.rectangle")
+                    Text("\(viewModel.totalPhotos)")
+                }
+
+                Spacer()
+
+                HStack {
+                    Image(systemName: "folder")
+                    Text("\(viewModel.totalCollections)")
+                }
+
+                Spacer()
+
+                HStack {
+                    Image(systemName: "heart")
+                    Text("\(viewModel.totalLikes)")
+                }
+
+                Spacer()
+            }
+
             VStack {
                 HStack {
                     ForEach(Tab.allCases, id: \.self) { tab in
