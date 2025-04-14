@@ -13,6 +13,7 @@ struct UserProfileView: View {
         case collections = "Collections"
     }
 
+    @EnvironmentObject var router: MainRouter
     @State private var selectedTab: Tab = .gallery
     private let viewModel: UserViewModel
 
@@ -53,6 +54,13 @@ struct UserProfileView: View {
             }
         }
         .navigationTitle(viewModel.name ?? viewModel.username)
+        .toolbar {
+            ToolbarItem {
+                Button("", systemImage: "xmark") {
+                    router.popToRoot()
+                }
+            }
+        }
     }
 }
 

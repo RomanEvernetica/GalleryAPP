@@ -64,7 +64,11 @@ class APIService {
                 statusCode: response.response?.statusCode
             )
 
-            let decoded = try JSONDecoder().decode(T.self, from: response.data!)
+            guard let data = response.data else {
+                return .failure(APIError.unknown)
+            }
+
+            let decoded = try JSONDecoder().decode(T.self, from: data)
             return .success(decoded)
 
         } catch let afError as AFError {

@@ -15,10 +15,12 @@ class GalleryItemViewModel: Identifiable, Equatable {
     let id: String
     let itemURL: URL?
     let fullImageURL: URL?
+    let user: UnsplashUser?
 
     init(item: UnsplashPhoto) {
         self.id = item.id
         self.itemURL = item.urls.small
         self.fullImageURL = item.urls.full
+        self.user = item.user
     }
 }
