@@ -51,7 +51,7 @@ struct CollectionDetailView: View {
                 UserView(viewModel: vm)
                     .padding(.horizontal, 16)
                     .onTapGesture {
-                        router.navigateTo(route: .userProfile(vm: vm))
+                        router.navigateOrPopTo(route: .userProfile(vm: vm))
                     }
             }
             

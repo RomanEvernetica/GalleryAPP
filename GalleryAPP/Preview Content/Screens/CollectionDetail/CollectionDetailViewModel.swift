@@ -8,7 +8,11 @@
 import Foundation
 
 @MainActor
-class CollectionDetailViewModel: ObservableObject {
+class CollectionDetailViewModel: ObservableObject, Equatable {
+    nonisolated static func == (lhs: CollectionDetailViewModel, rhs: CollectionDetailViewModel) -> Bool {
+        return lhs.collection.id == rhs.collection.id
+    }
+
     let collection: UnsplashCollection
 
     let galleryViewModel: GalleryViewModel

@@ -7,7 +7,11 @@
 
 import Foundation
 
-class GalleryItemViewModel: Identifiable {
+class GalleryItemViewModel: Identifiable, Equatable {
+    static func == (lhs: GalleryItemViewModel, rhs: GalleryItemViewModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+
     let id: String
     let itemURL: URL?
     let fullImageURL: URL?

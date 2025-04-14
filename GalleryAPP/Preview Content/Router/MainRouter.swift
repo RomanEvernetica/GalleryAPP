@@ -14,12 +14,12 @@ enum MainRoute: Hashable, Equatable {
 
     static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
         switch (lhs, rhs) {
-        case (.fullScreen, .fullScreen):
-            return true
-        case (.collection, .collection):
-            return true
-        case (.userProfile, .userProfile):
-            return true
+        case let (.fullScreen(lhsVM), .fullScreen(rhsVM)):
+            return lhsVM == rhsVM
+        case let (.collection(lhsVM), .collection(rhsVM)):
+            return lhsVM == rhsVM
+        case let (.userProfile(lhsVM), .userProfile(rhsVM)):
+            return lhsVM == rhsVM
         default:
             return false
         }
@@ -31,10 +31,38 @@ enum MainRoute: Hashable, Equatable {
 }
 
 class MainRouter: ObservableObject {
-    @Published var navigationPath = NavigationPath()
+    @Published var navigationPath = [MainRoute]()
 
     func navigateTo(route: MainRoute) {
         navigationPath.append(route)
+    }
+
+    func pop() {
+        navigationPath.removeLast()
+    }
+
+    func popToRoot() {
+        navigationPath.removeAll()
+    }
+
+    func popTo(route: MainRoute) {
+        if let index = navigationPath.firstIndex(of: route) {
+            navigationPath = Array(navigationPath[...index])
+        }
+    }
+
+    func switchTo(route: MainRoute) {
+        if let last = navigationPath.last {
+            navigationPath.replace([last], with: [route])
+        }
+    }
+
+    func navigateOrPopTo(route: MainRoute) {
+        if navigationPath.contains(route) {
+            popTo(route: route)
+        } else {
+            navigateTo(route: route)
+        }
     }
 
     @ViewBuilder

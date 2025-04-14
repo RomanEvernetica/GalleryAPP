@@ -7,7 +7,11 @@
 
 import Foundation
 
-class UserViewModel {
+class UserViewModel: Equatable {
+    static func == (lhs: UserViewModel, rhs: UserViewModel) -> Bool {
+        return lhs.username == rhs.username
+    }
+
     private let user: UnsplashUser
 
     var name: String? { user.name }
