@@ -12,7 +12,7 @@ class CollectionItemViewModel: Identifiable {
 
     var id: String { model.id }
     var url: URL? { model.coverPhoto?.urls.small }
-    var title: String? { model.id }
+    var title: String? { model.title }
 
     init(collection: UnsplashCollection) {
         self.model = collection

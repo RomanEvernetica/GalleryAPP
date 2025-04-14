@@ -36,8 +36,8 @@ struct GalleryView: View {
                                     viewModel.loadMoreIfNeeded(currentID: item.id)
                                 }
                                 .onTapGesture {
-                                    if let url = item.fullImageURL {
-                                        router.navigateTo(route: .fullScreen(vm: FullScreenViewModel(url: url)))
+                                    if item.fullImageURL != nil {
+                                        router.navigateTo(route: .fullScreen(vm: item))
                                     }
                                 }
                         }

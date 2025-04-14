@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum MainRoute: Hashable, Equatable {
-    case fullScreen(vm: FullScreenViewModel)
+    case fullScreen(vm: GalleryItemViewModel)
     case collection(vm: CollectionDetailViewModel)
 
     static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
