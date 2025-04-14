@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8BA9B5072DA52A5F00982436 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8BA9B5062DA52A5F00982436 /* Alamofire */; };
 		8BBCA9AB2D9EBAA700EEBFD7 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8BBCA9AA2D9EBAA700EEBFD7 /* SDWebImageSwiftUI */; };
+		8BCD3DFA2DAD3D3F00E9CF44 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 8BCD3DF92DAD3D3F00E9CF44 /* FlowStacks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			files = (
 				8BBCA9AB2D9EBAA700EEBFD7 /* SDWebImageSwiftUI in Frameworks */,
 				8BA9B5072DA52A5F00982436 /* Alamofire in Frameworks */,
+				8BCD3DFA2DAD3D3F00E9CF44 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				8BBCA9AA2D9EBAA700EEBFD7 /* SDWebImageSwiftUI */,
 				8BA9B5062DA52A5F00982436 /* Alamofire */,
+				8BCD3DF92DAD3D3F00E9CF44 /* FlowStacks */,
 			);
 			productName = GalleryAPP;
 			productReference = 8BBCA98B2D9E6CFD00EEBFD7 /* GalleryAPP.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				8BBCA9A92D9EBAA700EEBFD7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				8BA9B5052DA52A5F00982436 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				8BCD3DF82DAD3D3F00E9CF44 /* XCRemoteSwiftPackageReference "FlowStacks" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8BBCA98C2D9E6CFD00EEBFD7 /* Products */;
@@ -355,6 +359,14 @@
 				minimumVersion = 3.1.3;
 			};
 		};
+		8BCD3DF82DAD3D3F00E9CF44 /* XCRemoteSwiftPackageReference "FlowStacks" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/johnpatrickmorgan/FlowStacks";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -367,6 +379,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8BBCA9A92D9EBAA700EEBFD7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		8BCD3DF92DAD3D3F00E9CF44 /* FlowStacks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8BCD3DF82DAD3D3F00E9CF44 /* XCRemoteSwiftPackageReference "FlowStacks" */;
+			productName = FlowStacks;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

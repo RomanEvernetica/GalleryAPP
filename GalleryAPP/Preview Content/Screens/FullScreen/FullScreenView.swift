@@ -5,14 +5,14 @@
 //  Created by Eugene Shapovalov on 04.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
-//import SwiftUIX
 import SDWebImageSwiftUI
 
 struct FullScreenView: View {
     private let viewModel: GalleryItemViewModel
 
-    @EnvironmentObject var router: MainRouter
+    @EnvironmentObject var navigator: FlowNavigator<MainRoute>
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
 
@@ -25,7 +25,12 @@ struct FullScreenView: View {
                                     image: nil,
                                     action: {
             guard let user = viewModel.user else { return }
-            router.navigateOrPopTo(route: .userProfile(vm: UserViewModel(user: user)))
+            let route = MainRoute.userProfile(vm: UserViewModel(user: user))
+            if navigator.routes.contains(where: { $0.screen == route }) {
+                navigator.popTo(route)
+            } else {
+                navigator.push(route)
+            }
         })]
     }
 

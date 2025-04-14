@@ -5,6 +5,7 @@
 //  Created by Eugene Shapovalov on 14.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
 
 struct UserProfileView: View {
@@ -13,7 +14,7 @@ struct UserProfileView: View {
         case collections = "Collections"
     }
 
-    @EnvironmentObject var router: MainRouter
+    @EnvironmentObject var navigator: FlowNavigator<MainRoute>
     @State private var selectedTab: Tab = .gallery
     private let viewModel: UserViewModel
 
@@ -82,7 +83,7 @@ struct UserProfileView: View {
         .toolbar {
             ToolbarItem {
                 Button("", systemImage: "xmark") {
-                    router.popToRoot()
+                    navigator.popToRoot()
                 }
             }
         }

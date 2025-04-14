@@ -5,6 +5,7 @@
 //  Created by Eugene Shapovalov on 14.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
 
 struct CollectionsView: View {
@@ -12,7 +13,7 @@ struct CollectionsView: View {
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     @ObservedObject private var viewModel: CollectionsViewModel
-    @EnvironmentObject var router: MainRouter
+    @EnvironmentObject var navigator: FlowNavigator<MainRoute>
 
     init(viewModel: CollectionsViewModel) {
         self.viewModel = viewModel
@@ -36,7 +37,7 @@ struct CollectionsView: View {
                             }
                             .onTapGesture {
                                 let vm = CollectionDetailViewModel(collection: item.model)
-                                router.navigateTo(route: .collection(vm: vm))
+                                navigator.push(.collection(vm: vm))
                             }
                     }
                 }

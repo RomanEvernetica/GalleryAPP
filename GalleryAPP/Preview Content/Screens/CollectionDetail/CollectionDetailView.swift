@@ -5,12 +5,13 @@
 //  Created by Eugene Shapovalov on 11.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
 import SDWebImageSwiftUI
 
 struct CollectionDetailView: View {
     @ObservedObject private var viewModel: CollectionDetailViewModel
-    @EnvironmentObject var router: MainRouter
+    @EnvironmentObject var navigator: FlowNavigator<MainRoute>
 
     init(viewModel: CollectionDetailViewModel) {
         self.viewModel = viewModel
@@ -51,7 +52,12 @@ struct CollectionDetailView: View {
                 UserView(viewModel: vm)
                     .padding(.horizontal, 16)
                     .onTapGesture {
-                        router.navigateOrPopTo(route: .userProfile(vm: vm))
+                        let route = MainRoute.userProfile(vm: vm)
+                        if navigator.routes.contains(where: { $0.screen == route }) {
+                            navigator.popTo(route)
+                        } else {
+                            navigator.push(route)
+                        }
                     }
             }
             

@@ -5,6 +5,7 @@
 //  Created by Eugene Shapovalov on 08.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
 
 enum MainRoute: Hashable, Equatable {
@@ -27,53 +28,5 @@ enum MainRoute: Hashable, Equatable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.hashValue)
-    }
-}
-
-class MainRouter: ObservableObject {
-    @Published var navigationPath = [MainRoute]()
-
-    func navigateTo(route: MainRoute) {
-        navigationPath.append(route)
-    }
-
-    func pop() {
-        navigationPath.removeLast()
-    }
-
-    func popToRoot() {
-        navigationPath.removeAll()
-    }
-
-    func popTo(route: MainRoute) {
-        if let index = navigationPath.firstIndex(of: route) {
-            navigationPath = Array(navigationPath[...index])
-        }
-    }
-
-    func switchTo(route: MainRoute) {
-        if let last = navigationPath.last {
-            navigationPath.replace([last], with: [route])
-        }
-    }
-
-    func navigateOrPopTo(route: MainRoute) {
-        if navigationPath.contains(route) {
-            popTo(route: route)
-        } else {
-            navigateTo(route: route)
-        }
-    }
-
-    @ViewBuilder
-    func configure(route: MainRoute) -> some View {
-        switch route {
-        case let .fullScreen(vm):
-            FullScreenView(viewModel: vm)
-        case let .collection(vm):
-            CollectionDetailView(viewModel: vm)
-        case let .userProfile(vm):
-            UserProfileView(viewModel: vm)
-        }
     }
 }

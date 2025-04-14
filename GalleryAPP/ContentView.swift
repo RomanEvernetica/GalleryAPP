@@ -5,16 +5,23 @@
 //  Created by Eugene Shapovalov on 03.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var router: MainRouter
+    @State var routes: Routes<MainRoute> = []
 
     var body: some View {
-        NavigationStack(path: $router.navigationPath) {
+        FlowStack($routes, withNavigation: true) {
             MainScreenTabView()
-                .navigationDestination(for: MainRoute.self) { route in
-                    router.configure(route: route)
+                .flowDestination(for: MainRoute.self) { route in
+                    if case let .fullScreen(vm) = route {
+                        FullScreenView(viewModel: vm)
+                    } else if case let .collection(vm) = route {
+                        CollectionDetailView(viewModel: vm)
+                    } else if case let .userProfile(vm) = route {
+                        UserProfileView(viewModel: vm)
+                    }
                 }
         }
     }

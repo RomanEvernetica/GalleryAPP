@@ -5,6 +5,7 @@
 //  Created by Eugene Shapovalov on 14.04.2025.
 //
 
+import FlowStacks
 import SwiftUI
 
 struct GalleryView: View {
@@ -12,7 +13,7 @@ struct GalleryView: View {
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     @ObservedObject private var viewModel: GalleryViewModel
-    @EnvironmentObject var router: MainRouter
+    @EnvironmentObject var navigator: FlowNavigator<MainRoute>
 
     init(viewModel: GalleryViewModel) {
         self.viewModel = viewModel
@@ -36,7 +37,7 @@ struct GalleryView: View {
                             }
                             .onTapGesture {
                                 if item.fullImageURL != nil {
-                                    router.navigateTo(route: .fullScreen(vm: item))
+                                    navigator.push(.fullScreen(vm: item))
                                 }
                             }
                     }
