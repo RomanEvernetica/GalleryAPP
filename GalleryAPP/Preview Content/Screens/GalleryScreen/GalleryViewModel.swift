@@ -7,11 +7,26 @@
 
 import Foundation
 
+enum PhotoGalleryFlow {
+    case main
+    case collection(collectionID: String)
+    case user(username: String)
+}
+
 @MainActor
 class GalleryViewModel: ObservableObject {
     private let paginaionService: PaginationService<UnsplashPhoto>
-    private let collectionID: String?
+
     private var dataLoaded = false
+    private let flow: PhotoGalleryFlow
+    private var collectionID: String? {
+        switch flow {
+        case let .collection(collectionID):
+            return collectionID
+        default:
+            return nil
+        }
+    }
 
     @Published var dataSource: [GalleryItemViewModel] = []
     @Published var isLoading = false
@@ -36,10 +51,10 @@ class GalleryViewModel: ObservableObject {
         dataLoaded && dataSource.isEmpty
     }
 
-    init(collectionID: String? = nil) {
+    init(flow: PhotoGalleryFlow) {
         let apiService = APIService()
         self.paginaionService = PaginationService(apiService: apiService)
-        self.collectionID = collectionID
+        self.flow = flow
         self.start()
     }
 
@@ -107,10 +122,13 @@ class GalleryViewModel: ObservableObject {
 
 extension GalleryViewModel: @preconcurrency PaginationDelegate {
     func endpoint(page: Int) -> any Endpoint {
-        if let collectionID = collectionID {
-            UnsplashEndpoint.getCollectionPhotos(id: collectionID, page: page)
-        } else {
-            UnsplashEndpoint.getPhotos(page: page)
+        switch flow {
+        case .main:
+            return UnsplashEndpoint.getPhotos(page: page)
+        case let .collection(collectionID):
+            return UnsplashEndpoint.getCollectionPhotos(id: collectionID, page: page)
+        case let .user(username):
+            return UnsplashEndpoint.getUserPhotos(username: username, page: page)
         }
     }
     

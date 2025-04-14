@@ -10,12 +10,15 @@ import SwiftUI
 enum MainRoute: Hashable, Equatable {
     case fullScreen(vm: GalleryItemViewModel)
     case collection(vm: CollectionDetailViewModel)
+    case userProfile(vm: UserViewModel)
 
     static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
         switch (lhs, rhs) {
         case (.fullScreen, .fullScreen):
             return true
         case (.collection, .collection):
+            return true
+        case (.userProfile, .userProfile):
             return true
         default:
             return false
@@ -33,7 +36,7 @@ class MainRouter: ObservableObject {
     func navigateTo(route: MainRoute) {
         navigationPath.append(route)
     }
-    
+
     @ViewBuilder
     func configure(route: MainRoute) -> some View {
         switch route {
@@ -41,6 +44,8 @@ class MainRouter: ObservableObject {
             FullScreenView(viewModel: vm)
         case let .collection(vm):
             CollectionDetailView(viewModel: vm)
+        case let .userProfile(vm):
+            UserProfileView(viewModel: vm)
         }
     }
 }

@@ -47,8 +47,12 @@ struct CollectionDetailView: View {
             }
             
             if let user = viewModel.collection.user {
-                UserView(viewModel: UserViewModel(user: user))
+                let vm = UserViewModel(user: user)
+                UserView(viewModel: vm)
                     .padding(.horizontal, 16)
+                    .onTapGesture {
+                        router.navigateTo(route: .userProfile(vm: vm))
+                    }
             }
             
             if let description = viewModel.collection.description {
@@ -57,7 +61,7 @@ struct CollectionDetailView: View {
                     .padding(.horizontal, 16)
             }
             
-            GalleryView(viewModel: viewModel.galleryViewModel)
+            GalleryScreenView(viewModel: viewModel.galleryViewModel)
         }
     }
 }

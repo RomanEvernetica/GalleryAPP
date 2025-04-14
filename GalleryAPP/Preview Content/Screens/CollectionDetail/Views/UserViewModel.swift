@@ -13,6 +13,11 @@ class UserViewModel {
     var name: String? { user.name }
     var username: String { user.username }
     var imageURL: URL? { user.profileImage?.medium }
+    var bio: String? { user.bio }
+
+    var totalCollections: Int { user.totalCollections }
+    var totalLikes: Int { user.totalLikes }
+    var totalPhotos: Int { user.totalPhotos }
 
     init(user: UnsplashUser) {
         self.user = user

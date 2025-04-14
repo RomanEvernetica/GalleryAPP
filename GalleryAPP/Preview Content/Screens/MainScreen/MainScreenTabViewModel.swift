@@ -13,7 +13,7 @@ class MainScreenTabViewModel {
     let collectionsViewModel: CollectionsViewModel
 
     init() {
-        self.galleryViewModel = GalleryViewModel()
-        self.collectionsViewModel = CollectionsViewModel()
+        self.galleryViewModel = GalleryViewModel(flow: .main)
+        self.collectionsViewModel = CollectionsViewModel(flow: .main)
     }
 }

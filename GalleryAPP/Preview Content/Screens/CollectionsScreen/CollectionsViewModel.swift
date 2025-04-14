@@ -7,9 +7,16 @@
 
 import Foundation
 
+enum CollectionsGalleryFlow {
+    case main
+    case user(username: String)
+}
+
 @MainActor
 class CollectionsViewModel: ObservableObject {
     private let paginaionService: PaginationService<UnsplashCollection>
+
+    private let flow: CollectionsGalleryFlow
     private var dataLoaded = false
 
     @Published var dataSource: [CollectionItemViewModel] = []
@@ -36,10 +43,11 @@ class CollectionsViewModel: ObservableObject {
         dataLoaded && dataSource.isEmpty
     }
 
-    init() {
+    init(flow: CollectionsGalleryFlow) {
         let apiService = APIService()
-        paginaionService = PaginationService(apiService: apiService)
-        start()
+        self.paginaionService = PaginationService(apiService: apiService)
+        self.flow = flow
+        self.start()
     }
 
     private func start() {
@@ -106,7 +114,12 @@ class CollectionsViewModel: ObservableObject {
 
 extension CollectionsViewModel: @preconcurrency PaginationDelegate {
     func endpoint(page: Int) -> any Endpoint {
-        UnsplashEndpoint.getCollections(page: page)
+        switch flow {
+        case .main:
+            return UnsplashEndpoint.getCollections(page: page)
+        case let .user(username):
+            return UnsplashEndpoint.getUserCollections(username: username, page: page)
+        }
     }
 
     func searchEndpoint(query: String, page: Int) -> any Endpoint {

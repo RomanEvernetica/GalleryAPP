@@ -20,12 +20,12 @@ struct MainScreenTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            GalleryView(viewModel: viewModel.galleryViewModel)
+            GalleryScreenView(viewModel: viewModel.galleryViewModel)
                 .tabItem {
                     Label("Gallery", systemImage: "photo.on.rectangle")
                 }
                 .tag(Tab.gallery)
-            CollectionsView(viewModel: viewModel.collectionsViewModel)
+            CollectionsScreenView(viewModel: viewModel.collectionsViewModel)
                 .tabItem {
                     Label("Collections", systemImage: "folder")
                 }

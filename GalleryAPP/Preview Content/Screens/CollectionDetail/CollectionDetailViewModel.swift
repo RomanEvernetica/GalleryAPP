@@ -15,6 +15,6 @@ class CollectionDetailViewModel: ObservableObject {
 
     init(collection: UnsplashCollection) {
         self.collection = collection
-        self.galleryViewModel = GalleryViewModel(collectionID: collection.id)
+        self.galleryViewModel = GalleryViewModel(flow: .collection(collectionID: collection.id))
     }
 }
