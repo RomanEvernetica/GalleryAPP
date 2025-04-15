@@ -26,11 +26,7 @@ struct FullScreenView: View {
                                     action: {
             guard let user = viewModel.user else { return }
             let route = MainRoute.userProfile(vm: UserViewModel(user: user))
-            if navigator.routes.contains(where: { $0.screen == route }) {
-                navigator.popTo(route)
-            } else {
-                navigator.push(route)
-            }
+            navigator.navigateOrPopTo(route: route)
         })]
     }
 

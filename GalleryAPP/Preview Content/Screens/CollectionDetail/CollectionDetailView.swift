@@ -53,11 +53,7 @@ struct CollectionDetailView: View {
                     .padding(.horizontal, 16)
                     .onTapGesture {
                         let route = MainRoute.userProfile(vm: vm)
-                        if navigator.routes.contains(where: { $0.screen == route }) {
-                            navigator.popTo(route)
-                        } else {
-                            navigator.push(route)
-                        }
+                        navigator.navigateOrPopTo(route: route)
                     }
             }
             

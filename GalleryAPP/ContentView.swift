@@ -8,21 +8,29 @@
 import FlowStacks
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView: RootView {
     @State var routes: Routes<MainRoute> = []
 
     var body: some View {
         FlowStack($routes, withNavigation: true) {
             MainScreenTabView()
                 .flowDestination(for: MainRoute.self) { route in
-                    if case let .fullScreen(vm) = route {
-                        FullScreenView(viewModel: vm)
-                    } else if case let .collection(vm) = route {
-                        CollectionDetailView(viewModel: vm)
-                    } else if case let .userProfile(vm) = route {
-                        UserProfileView(viewModel: vm)
-                    }
+                    configure(route: route)
                 }
+        }
+    }
+}
+
+extension ContentView {
+    @ViewBuilder
+    func configure(route: MainRoute) -> some View {
+        switch route {
+        case let .fullScreen(vm):
+            FullScreenView(viewModel: vm)
+        case let .collection(vm):
+            CollectionDetailView(viewModel: vm)
+        case let .userProfile(vm):
+            UserProfileView(viewModel: vm)
         }
     }
 }

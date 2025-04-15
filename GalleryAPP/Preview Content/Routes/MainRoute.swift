@@ -1,11 +1,10 @@
 //
-//  MainRouter.swift
+//  MainRoute.swift
 //  GalleryAPP
 //
 //  Created by Eugene Shapovalov on 08.04.2025.
 //
 
-import FlowStacks
 import SwiftUI
 
 enum MainRoute: Hashable, Equatable {
